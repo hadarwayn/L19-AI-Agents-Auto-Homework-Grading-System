@@ -1,0 +1,51 @@
+# L19 AI Agents Auto Homework Grading System Configuration
+
+agents:
+  email_extraction:
+    enabled: true
+    batch_size: 50
+    subject_pattern: "self\\s+check\\s+of\\s+homework\\s+(\\d{1,3})"
+    github_url_pattern: "https://github\\.com/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_.-]+)(\\.git)?"
+
+  repository_analysis:
+    enabled: true
+    max_workers: 5
+    clone_timeout: 60
+    line_limit: 150
+
+  llm_feedback:
+    enabled: true
+    model: gemini-1.5-flash
+    max_tokens: 500
+    temperature: 0.7
+    request_delay: 2
+    max_retries: 3
+
+  draft_creation:
+    enabled: true
+
+grading:
+  line_limit: 150
+  grade_ranges:
+    excellent: [90, 100]
+    good: [70, 90]
+    pass: [55, 70]
+    needs_work: [0, 55]
+
+  personas:
+    excellent: trump
+    good: hason
+    pass: lee
+    needs_work: amsalem
+
+logging:
+  level: INFO
+  max_lines_per_file: 1000
+  max_files: 5
+
+excel:
+  files:
+    agent1: "Excel1.xlsx"
+    agent2: "Excel2.xlsx"
+    agent3: "Excel3.xlsx"
+  student_mapping: "students_mapping.xlsx"

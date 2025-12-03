@@ -1,0 +1,1027 @@
+{
+  "project_name": "L19 - AI Agents Auto Homework Grading System (Claude Code Agents)",
+  "version": "3.2",
+  "created": "December 2025",
+  "last_updated": "December 3, 2025",
+  "author": "Hadar",
+  "total_estimated_hours": 15,
+  "status": "Awaiting Approval",
+  "architecture": "Claude Code Agents with SKILL.md files - Dual execution mode (manual + automated)",
+  "changelog": {
+    "v3.2": "Data structure & search improvements: (1) Removed hashed_email column from Excel1.xlsx (7 columns now). (2) Enhanced Gmail search: Uses first 3 words for long phrases + case-insensitive Python post-filtering for exact substring matching. (3) Updated Agents 2 & 4 to match new Excel1 format.",
+    "v3.1": "Agent 1 enhancement: Dynamic user-prompted parameters (email subject, sender, max emails 1-100, default 10). Removed hardcoded mode selection."
+  },
+  "execution_modes": {
+    "manual": "claude → /agents → select agent (development/testing)",
+    "automated": "python main.py → Rich UI → subprocess invocation (production)"
+  },
+  "phases": [
+    {
+      "phase": "1_foundation",
+      "phase_name": "Foundation & Project Setup",
+      "estimated_hours": 2.5,
+      "status": "Pending",
+      "tasks": [
+        {
+          "id": "TASK-001",
+          "name": "Initialize project structure",
+          "priority": "critical",
+          "estimated_minutes": 20,
+          "dependencies": [],
+          "description": "Create all required directories and root files following PROJECT_GUIDELINES.md",
+          "files_to_create": [
+            "README.md",
+            "main.py",
+            "requirements.txt",
+            ".gitignore",
+            ".env.example",
+            "venv/.gitkeep"
+          ],
+          "directories_to_create": [
+            ".claude/agents/Agent1_Email_Extractor/",
+            ".claude/agents/Agent2_Repository_Analyzer/",
+            ".claude/agents/Agent3_LLM_Feedback/",
+            ".claude/agents/Agent3_LLM_Feedback/personas/",
+            ".claude/agents/Agent4_Draft_Creator/",
+            "src/",
+            "src/ui/",
+            "src/utils/",
+            "docs/",
+            "results/excel/",
+            "results/graphs/",
+            "results/examples/",
+            "data/",
+            "logs/config/",
+            "config/",
+            "Secrets/",
+            "temp/repos/"
+          ],
+          "acceptance_criteria": [
+            "All directories created with proper structure",
+            "All root files present",
+            "venv folder with .gitkeep instructions"
+          ]
+        },
+        {
+          "id": "TASK-002",
+          "name": "Create all __init__.py files",
+          "priority": "critical",
+          "estimated_minutes": 10,
+          "dependencies": ["TASK-001"],
+          "description": "Create __init__.py files for minimal Python packages",
+          "files_to_create": [
+            "src/__init__.py",
+            "src/ui/__init__.py",
+            "src/utils/__init__.py"
+          ],
+          "acceptance_criteria": [
+            "All packages importable",
+            "No circular imports",
+            "__all__ defined in each __init__.py"
+          ]
+        },
+        {
+          "id": "TASK-003",
+          "name": "Implement path management utilities",
+          "priority": "critical",
+          "estimated_minutes": 30,
+          "dependencies": ["TASK-002"],
+          "description": "Create paths.py with relative path utilities using pathlib.Path",
+          "files_to_create": [
+            "src/utils/paths.py"
+          ],
+          "functions_to_implement": [
+            "get_project_root() -> Path",
+            "get_src_dir() -> Path",
+            "get_results_dir() -> Path",
+            "get_excel_dir() -> Path",
+            "get_logs_dir() -> Path",
+            "get_temp_dir() -> Path",
+            "get_secrets_dir() -> Path",
+            "get_data_dir() -> Path",
+            "ensure_directories() -> None"
+          ],
+          "acceptance_criteria": [
+            "All paths relative using pathlib",
+            "Works on Windows and Linux",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-004",
+          "name": "Implement configuration loader",
+          "priority": "critical",
+          "estimated_minutes": 40,
+          "dependencies": ["TASK-003"],
+          "description": "Create config.py with Pydantic models and .env support",
+          "files_to_create": [
+            "src/utils/config.py",
+            "config/settings.yaml"
+          ],
+          "functions_to_implement": [
+            "load_config() -> Settings",
+            "get_settings() -> Settings",
+            "Settings class with Pydantic validation"
+          ],
+          "acceptance_criteria": [
+            "Loads from .env and settings.yaml",
+            "Pydantic validation for all fields",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-005",
+          "name": "Implement ring buffer logging system",
+          "priority": "critical",
+          "estimated_minutes": 45,
+          "dependencies": ["TASK-003"],
+          "description": "Create logger.py with ring buffer implementation",
+          "files_to_create": [
+            "src/utils/logger.py",
+            "logs/config/log_config.json"
+          ],
+          "functions_to_implement": [
+            "RingBufferHandler class",
+            "setup_logger(name: str) -> Logger",
+            "get_log_status() -> dict",
+            "print_log_status() -> None"
+          ],
+          "acceptance_criteria": [
+            "Max 1000 lines per file",
+            "Max 5 log files",
+            "Auto-rotation works",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-006",
+          "name": "Implement validators and hash utilities",
+          "priority": "high",
+          "estimated_minutes": 30,
+          "dependencies": ["TASK-002"],
+          "description": "Create input validation and SHA-256 hashing utilities",
+          "files_to_create": [
+            "src/utils/validators.py",
+            "src/utils/hash_utils.py"
+          ],
+          "functions_to_implement": [
+            "validate_email(email: str) -> bool",
+            "validate_github_url(url: str) -> bool",
+            "extract_github_url(text: str) -> Optional[str]",
+            "generate_email_id(sender: str, subject: str, datetime: str) -> str",
+            "hash_email_address(email: str) -> str"
+          ],
+          "acceptance_criteria": [
+            "Regex patterns match requirements",
+            "SHA-256 hashing works",
+            "Under 150 lines each"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "3_services",
+      "phase_name": "External Service Integrations",
+      "estimated_hours": 4,
+      "status": "Pending",
+      "tasks": [
+        {
+          "id": "TASK-010",
+          "name": "Implement Gmail service",
+          "priority": "critical",
+          "estimated_minutes": 60,
+          "dependencies": ["TASK-004", "TASK-005"],
+          "description": "Gmail API wrapper for OAuth2, email search, and draft creation",
+          "files_to_create": [
+            "src/services/gmail_service.py"
+          ],
+          "functions_to_implement": [
+            "authenticate() -> Credentials",
+            "get_service() -> Resource",
+            "search_emails(query: str, max_results: int) -> List[dict]",
+            "get_email_content(email_id: str) -> dict",
+            "mark_as_read(email_id: str) -> bool",
+            "create_draft(to: str, subject: str, body: str, thread_id: str) -> str"
+          ],
+          "acceptance_criteria": [
+            "OAuth2 flow works correctly",
+            "Email search returns proper format",
+            "Draft creation as reply works",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-011",
+          "name": "Implement GitHub service",
+          "priority": "critical",
+          "estimated_minutes": 60,
+          "dependencies": ["TASK-004", "TASK-005"],
+          "description": "Git operations for multi-threaded repository cloning",
+          "files_to_create": [
+            "src/services/github_service.py"
+          ],
+          "functions_to_implement": [
+            "clone_repository(url: str, dest: Path, timeout: int) -> bool",
+            "clone_repositories_parallel(urls: List[str], max_workers: int) -> dict",
+            "get_python_files(repo_path: Path) -> List[Path]",
+            "count_lines(file_path: Path) -> int",
+            "cleanup_repository(repo_path: Path) -> None"
+          ],
+          "acceptance_criteria": [
+            "Multi-threaded cloning with ThreadPoolExecutor",
+            "Per-thread logging implemented",
+            "Timeout handling works",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-012",
+          "name": "Implement Gemini service",
+          "priority": "critical",
+          "estimated_minutes": 50,
+          "dependencies": ["TASK-004", "TASK-005"],
+          "description": "Google Gemini AI wrapper with retry logic",
+          "files_to_create": [
+            "src/services/gemini_service.py"
+          ],
+          "functions_to_implement": [
+            "initialize_client() -> GenerativeModel",
+            "generate_response(prompt: str, max_tokens: int) -> str",
+            "generate_with_retry(prompt: str, max_retries: int) -> Optional[str]"
+          ],
+          "acceptance_criteria": [
+            "API calls work correctly",
+            "Retry logic with exponential backoff",
+            "Configurable delay between calls",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-013",
+          "name": "Implement Excel service",
+          "priority": "critical",
+          "estimated_minutes": 50,
+          "dependencies": ["TASK-003", "TASK-007", "TASK-008", "TASK-009"],
+          "description": "Excel file operations using openpyxl",
+          "files_to_create": [
+            "src/services/excel_service.py"
+          ],
+          "functions_to_implement": [
+            "create_workbook(headers: List[str], filepath: Path) -> Workbook",
+            "read_workbook(filepath: Path) -> List[dict]",
+            "write_row(filepath: Path, data: dict) -> None",
+            "update_status(filepath: Path, email_id: str, status: str) -> None",
+            "get_ready_rows(filepath: Path) -> List[dict]",
+            "get_row_count(filepath: Path) -> int"
+          ],
+          "acceptance_criteria": [
+            "Create/read/write works correctly",
+            "Status filtering works",
+            "Thread-safe operations",
+            "Under 150 lines"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "4_skills",
+      "phase_name": "AI Persona Skills Implementation",
+      "estimated_hours": 2.5,
+      "status": "Pending",
+      "tasks": [
+        {
+          "id": "TASK-014",
+          "name": "Implement base skill class",
+          "priority": "high",
+          "estimated_minutes": 20,
+          "dependencies": ["TASK-002"],
+          "description": "Abstract base class for all persona skills",
+          "files_to_create": [
+            "src/skills/base_skill.py"
+          ],
+          "functions_to_implement": [
+            "BaseSkill abstract class",
+            "get_prompt_template() -> str (abstract)",
+            "get_persona_description() -> str (abstract)",
+            "format_feedback(grade: float, repo_url: str) -> str"
+          ],
+          "acceptance_criteria": [
+            "Abstract methods defined",
+            "Common functionality in base class",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-015",
+          "name": "Implement Trump skill (90-100)",
+          "priority": "high",
+          "estimated_minutes": 25,
+          "dependencies": ["TASK-014"],
+          "description": "Donald Trump persona for excellent grades",
+          "files_to_create": [
+            "src/skills/trump_skill.py"
+          ],
+          "prompt_style": "Enthusiastic, superlatives, 'tremendous', 'fantastic', 'winner', 'the best'",
+          "acceptance_criteria": [
+            "Prompt captures Trump speaking style",
+            "Example phrases included",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-016",
+          "name": "Implement Hason skill (70-90)",
+          "priority": "high",
+          "estimated_minutes": 25,
+          "dependencies": ["TASK-014"],
+          "description": "Shahar Hason persona for good grades",
+          "files_to_create": [
+            "src/skills/hason_skill.py"
+          ],
+          "prompt_style": "Israeli comedian style, witty observations, humorous, self-deprecating",
+          "acceptance_criteria": [
+            "Prompt captures Israeli comedy style",
+            "Humorous yet informative",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-017",
+          "name": "Implement Lee skill (55-70)",
+          "priority": "high",
+          "estimated_minutes": 25,
+          "dependencies": ["TASK-014"],
+          "description": "Bruce Lee persona for passing grades",
+          "files_to_create": [
+            "src/skills/lee_skill.py"
+          ],
+          "prompt_style": "Martial arts philosophy, wisdom, encouragement, 'be like water', discipline",
+          "acceptance_criteria": [
+            "Prompt captures Bruce Lee philosophy",
+            "Motivational and wise",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-018",
+          "name": "Implement Amsalem skill (0-55)",
+          "priority": "high",
+          "estimated_minutes": 25,
+          "dependencies": ["TASK-014"],
+          "description": "Dudi Amsalem persona for low grades",
+          "files_to_create": [
+            "src/skills/amsalem_skill.py"
+          ],
+          "prompt_style": "Israeli politician style, direct, blunt, firebrand, demands improvement",
+          "acceptance_criteria": [
+            "Prompt captures politician directness",
+            "Blunt but encouraging to improve",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-019",
+          "name": "Implement skill factory",
+          "priority": "high",
+          "estimated_minutes": 25,
+          "dependencies": ["TASK-015", "TASK-016", "TASK-017", "TASK-018"],
+          "description": "Factory pattern to select skill based on grade",
+          "files_to_create": [
+            "src/skills/skill_factory.py"
+          ],
+          "functions_to_implement": [
+            "get_skill_for_grade(grade: float) -> BaseSkill",
+            "get_grade_category(grade: float) -> str",
+            "get_persona_name(grade: float) -> str",
+            "list_available_skills() -> List[str]"
+          ],
+          "acceptance_criteria": [
+            "Correct skill selected for each range",
+            "90-100: Trump, 70-90: Hason, 55-70: Lee, 0-55: Amsalem",
+            "Under 150 lines"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "5_agents",
+      "phase_name": "Agent Implementations",
+      "estimated_hours": 5,
+      "status": "Pending",
+      "tasks": [
+        {
+          "id": "TASK-020",
+          "name": "Implement base agent class",
+          "priority": "critical",
+          "estimated_minutes": 25,
+          "dependencies": ["TASK-005"],
+          "description": "Abstract base class for all agents",
+          "files_to_create": [
+            "src/agents/base_agent.py"
+          ],
+          "functions_to_implement": [
+            "BaseAgent abstract class",
+            "run() -> bool (abstract)",
+            "get_status() -> str",
+            "log_info(), log_error(), log_warning()"
+          ],
+          "acceptance_criteria": [
+            "Common agent functionality",
+            "Logging integration",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-021",
+          "name": "Implement Agent 1 - Email Extractor",
+          "priority": "critical",
+          "estimated_minutes": 60,
+          "dependencies": ["TASK-010", "TASK-013", "TASK-006", "TASK-020"],
+          "description": "Email extraction agent creating Excel1.xlsx",
+          "files_to_create": [
+            "src/agents/agent1_email.py"
+          ],
+          "functions_to_implement": [
+            "run(mode: str, batch_size: int) -> bool",
+            "search_homework_emails(max_results: int) -> List[dict]",
+            "extract_submission_data(email: dict) -> EmailData",
+            "save_to_excel(submissions: List[EmailData]) -> Path"
+          ],
+          "acceptance_criteria": [
+            "Connects to Gmail successfully",
+            "Extracts GitHub URLs with regex",
+            "Creates Excel1.xlsx correctly",
+            "Status field set properly",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-022",
+          "name": "Implement Agent 2 - Repository Analyzer",
+          "priority": "critical",
+          "estimated_minutes": 70,
+          "dependencies": ["TASK-011", "TASK-013", "TASK-020"],
+          "description": "Multi-threaded repository analysis agent",
+          "files_to_create": [
+            "src/agents/agent2_analyzer.py"
+          ],
+          "functions_to_implement": [
+            "run() -> bool",
+            "check_prerequisites() -> bool",
+            "load_submissions() -> List[EmailData]",
+            "analyze_repository(url: str, email_id: str) -> RepositoryAnalysis",
+            "calculate_grade(total_lines: int, compliant_lines: int) -> float",
+            "save_to_excel(results: List[RepositoryAnalysis]) -> Path"
+          ],
+          "acceptance_criteria": [
+            "Reads Excel1.xlsx 'Ready' rows only",
+            "Multi-threaded cloning (5 workers)",
+            "Grade formula: 100 * compliant_lines / total_lines",
+            "Creates Excel2.xlsx correctly",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-023",
+          "name": "Implement Agent 3 - LLM Feedback",
+          "priority": "critical",
+          "estimated_minutes": 70,
+          "dependencies": ["TASK-012", "TASK-013", "TASK-019", "TASK-020"],
+          "description": "AI feedback generation with personas",
+          "files_to_create": [
+            "src/agents/agent3_llm.py"
+          ],
+          "functions_to_implement": [
+            "run() -> bool",
+            "check_prerequisites() -> bool",
+            "load_graded_submissions() -> List[RepositoryAnalysis]",
+            "generate_feedback(analysis: RepositoryAnalysis) -> FeedbackData",
+            "save_to_excel(results: List[FeedbackData]) -> Path"
+          ],
+          "acceptance_criteria": [
+            "Reads Excel2.xlsx 'Ready' rows only",
+            "Selects correct persona per grade range",
+            "Retry logic handles API failures",
+            "Empty response on final failure (no fallback text)",
+            "Creates Excel3.xlsx correctly",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-024",
+          "name": "Implement Agent 4 - Draft Creator",
+          "priority": "critical",
+          "estimated_minutes": 60,
+          "dependencies": ["TASK-010", "TASK-013", "TASK-020"],
+          "description": "Gmail draft creation agent",
+          "files_to_create": [
+            "src/agents/agent4_draft.py"
+          ],
+          "functions_to_implement": [
+            "run() -> bool",
+            "check_prerequisites() -> bool",
+            "load_feedback_data() -> List[FeedbackData]",
+            "load_student_mapping() -> dict",
+            "create_email_draft(feedback: FeedbackData, email_data: EmailData) -> str",
+            "format_email_body(feedback: FeedbackData, student_name: str) -> str"
+          ],
+          "acceptance_criteria": [
+            "Reads Excel3.xlsx 'Ready' rows only",
+            "Joins with Excel1.xlsx for thread_id",
+            "Uses students_mapping.xlsx for names",
+            "Creates draft (NOT sends)",
+            "Under 150 lines"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "6_ui",
+      "phase_name": "User Interface Implementation",
+      "estimated_hours": 2,
+      "status": "Pending",
+      "tasks": [
+        {
+          "id": "TASK-025",
+          "name": "Implement display utilities",
+          "priority": "high",
+          "estimated_minutes": 40,
+          "dependencies": ["TASK-005"],
+          "description": "Rich-based output formatting",
+          "files_to_create": [
+            "src/ui/display.py"
+          ],
+          "functions_to_implement": [
+            "print_header(text: str) -> None",
+            "print_success(text: str) -> None",
+            "print_error(text: str) -> None",
+            "print_warning(text: str) -> None",
+            "print_info(text: str) -> None",
+            "show_progress(current: int, total: int, desc: str) -> None",
+            "display_table(headers: List[str], rows: List[List]) -> None",
+            "display_status_summary(data: dict) -> None"
+          ],
+          "acceptance_criteria": [
+            "Color-coded output using Rich",
+            "Progress bars work correctly",
+            "Tables display properly",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-026",
+          "name": "Implement menu system with Agent 1 parameter prompts",
+          "priority": "high",
+          "estimated_minutes": 45,
+          "dependencies": ["TASK-025"],
+          "description": "Main menu and Agent 1 parameter prompt UI (email subject, sender, max emails)",
+          "files_to_create": [
+            "src/ui/menu.py"
+          ],
+          "functions_to_implement": [
+            "display_main_menu() -> int",
+            "get_agent1_parameters() -> dict",
+            "validate_email(email: str) -> bool",
+            "validate_max_emails(count: str) -> int"
+          ],
+          "acceptance_criteria": [
+            "Beautiful Rich-based UI",
+            "Main menu with 8 options (Agents 1-4, Run All, Reset, Status, Exit)",
+            "Agent 1 parameter prompts (subject optional, sender optional, max emails 1-100 default 10)",
+            "Input validation works correctly",
+            "Under 150 lines"
+          ]
+        },
+        {
+          "id": "TASK-027",
+          "name": "Implement agent runner and system operations",
+          "priority": "high",
+          "estimated_minutes": 45,
+          "dependencies": ["TASK-026", "TASK-021", "TASK-022", "TASK-023", "TASK-024"],
+          "description": "Agent invocation, system reset, and status display functions",
+          "files_to_create": [
+            "src/ui/agent_runner.py"
+          ],
+          "functions_to_implement": [
+            "run_agent(agent_name: str, params: Optional[dict]) -> bool",
+            "run_all_agents(agent1_params: dict) -> bool",
+            "verify_agent_output(agent_name: str) -> bool",
+            "reset_system() -> None",
+            "display_system_status() -> None"
+          ],
+          "acceptance_criteria": [
+            "Agent 1 receives and uses dynamic parameters (subject, sender, max_emails)",
+            "Agents 2-4 run without additional parameters",
+            "Run All prompts for Agent 1 params and executes sequentially",
+            "Reset with confirmation works",
+            "Status display shows Excel files, repos, and logs",
+            "Under 150 lines total"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "7_main",
+      "phase_name": "Main Entry Point",
+      "estimated_hours": 0.5,
+      "status": "Pending",
+      "tasks": [
+        {
+          "id": "TASK-028",
+          "name": "Implement main.py entry point",
+          "priority": "critical",
+          "estimated_minutes": 30,
+          "dependencies": ["TASK-027"],
+          "description": "Main entry point launching the application",
+          "files_to_update": [
+            "main.py"
+          ],
+          "functions_to_implement": [
+            "main() -> None",
+            "setup_environment() -> bool",
+            "verify_dependencies() -> bool",
+            "run_menu_loop() -> None"
+          ],
+          "acceptance_criteria": [
+            "Single command: python main.py",
+            "Environment verification",
+            "Graceful error handling",
+            "Under 150 lines"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "8_testing",
+      "phase_name": "Testing & Validation",
+      "estimated_hours": 2,
+      "status": "Pending",
+      "tasks": [
+        {
+          "id": "TASK-029",
+          "name": "Test Agent 1 individually",
+          "priority": "high",
+          "estimated_minutes": 30,
+          "dependencies": ["TASK-028"],
+          "description": "Test email extraction with real Gmail",
+          "test_scenarios": [
+            "Test mode: 1 email extracted",
+            "Valid email with GitHub URL → status=Ready",
+            "Email without GitHub URL → status=Missing: github_url",
+            "Excel1.xlsx created with correct columns"
+          ],
+          "acceptance_criteria": [
+            "Agent 1 completes without errors",
+            "Excel file has correct structure",
+            "Status field set correctly"
+          ]
+        },
+        {
+          "id": "TASK-030",
+          "name": "Test Agent 2 individually",
+          "priority": "high",
+          "estimated_minutes": 30,
+          "dependencies": ["TASK-029"],
+          "description": "Test repository analysis with multi-threading",
+          "test_scenarios": [
+            "Multi-threaded cloning works (5 workers)",
+            "Grade calculation is correct",
+            "Clone timeout handled gracefully",
+            "Excel2.xlsx created with grades"
+          ],
+          "acceptance_criteria": [
+            "Agent 2 completes without errors",
+            "Grade formula matches PRD",
+            "Per-thread logging works"
+          ]
+        },
+        {
+          "id": "TASK-031",
+          "name": "Test Agent 3 individually",
+          "priority": "high",
+          "estimated_minutes": 30,
+          "dependencies": ["TASK-030"],
+          "description": "Test LLM feedback generation with personas",
+          "test_scenarios": [
+            "Grade 95 → Trump persona",
+            "Grade 80 → Hason persona",
+            "Grade 60 → Lee persona",
+            "Grade 40 → Amsalem persona",
+            "API failure → empty response, status=Missing: reply"
+          ],
+          "acceptance_criteria": [
+            "Agent 3 completes without errors",
+            "Correct persona selected",
+            "Retry logic works"
+          ]
+        },
+        {
+          "id": "TASK-032",
+          "name": "Test Agent 4 individually",
+          "priority": "high",
+          "estimated_minutes": 30,
+          "dependencies": ["TASK-031"],
+          "description": "Test draft email creation",
+          "test_scenarios": [
+            "Draft created in Gmail Drafts folder",
+            "Email NOT sent",
+            "Student name from mapping file used",
+            "Reply uses correct thread_id"
+          ],
+          "acceptance_criteria": [
+            "Agent 4 completes without errors",
+            "Draft visible in Gmail",
+            "Email formatted correctly"
+          ]
+        },
+        {
+          "id": "TASK-033",
+          "name": "Test full pipeline end-to-end",
+          "priority": "critical",
+          "estimated_minutes": 45,
+          "dependencies": ["TASK-032"],
+          "description": "Run all agents sequentially",
+          "test_scenarios": [
+            "Run All option works",
+            "Data flows correctly between agents",
+            "All Excel files created",
+            "Drafts created for Ready rows only"
+          ],
+          "acceptance_criteria": [
+            "Full pipeline completes",
+            "3 test submissions processed",
+            "Data consistent across files"
+          ]
+        },
+        {
+          "id": "TASK-034",
+          "name": "Test reset functionality",
+          "priority": "high",
+          "estimated_minutes": 15,
+          "dependencies": ["TASK-033"],
+          "description": "Test system reset clears all data",
+          "test_scenarios": [
+            "All Excel files deleted",
+            "Temp repos deleted",
+            "Logs preserved",
+            "Confirmation required"
+          ],
+          "acceptance_criteria": [
+            "Reset clears all generated data",
+            "System ready for fresh run"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "9_documentation",
+      "phase_name": "Documentation & Polish",
+      "estimated_hours": 1.5,
+      "status": "Pending",
+      "tasks": [
+        {
+          "id": "TASK-035",
+          "name": "Write comprehensive README.md",
+          "priority": "critical",
+          "estimated_minutes": 75,
+          "dependencies": ["TASK-033"],
+          "description": "Complete project documentation with DUAL EXECUTION MODE instructions following PROJECT_GUIDELINES.md and PRD requirements",
+          "sections_to_include": [
+            "Project Overview & Abstract",
+            "Features",
+            "System Architecture Diagram (showing dual execution paths)",
+            "Installation (WSL & PowerShell)",
+            "Virtual Environment Setup (UV)",
+            "Gmail API Setup Guide",
+            "Gemini API Setup",
+            "Configuration (.env and settings.yaml)",
+            "**CRITICAL: Dual Execution Modes Section**",
+            "  - Quick Start: Automated Mode (python main.py)",
+            "  - Manual Execution: Development Mode (claude → /agents)",
+            "  - How Both Modes Work (diagram + explanation)",
+            "  - When to Use Each Mode",
+            "Usage Examples for Both Modes",
+            "Agent Structure (.claude/agents/ with SKILL.md files)",
+            "Code Files Summary Table",
+            "Results & Screenshots (both execution modes)",
+            "Troubleshooting",
+            "Learning Objectives"
+          ],
+          "required_content": {
+            "automated_mode_quickstart": "Step-by-step: python main.py → select mode → run agents → see results",
+            "manual_mode_instructions": "Step-by-step: claude → /agents → select agent → agent executes",
+            "architecture_explanation": "Diagram showing SKILL.md as single source of truth, two execution paths",
+            "persona_skills_info": "Explain Agent 3 uses 4 persona sub-skills (trump, hason, lee, amsalem)"
+          },
+          "acceptance_criteria": [
+            "All sections complete",
+            "BOTH execution modes documented thoroughly",
+            "Clear diagrams showing dual execution architecture",
+            "Step-by-step instructions for both modes",
+            "Screenshots of both claude /agents and python main.py",
+            "Agent structure with .claude/agents/ clearly explained",
+            "Code files table included",
+            "15-year-old test passed",
+            "Installation tested for both modes"
+          ]
+        },
+        {
+          "id": "TASK-036",
+          "name": "Create example results",
+          "priority": "high",
+          "estimated_minutes": 30,
+          "dependencies": ["TASK-033"],
+          "description": "Save example outputs and screenshots",
+          "files_to_create": [
+            "results/examples/run_1/",
+            "results/examples/run_2/",
+            "results/examples/run_3/",
+            "results/graphs/"
+          ],
+          "acceptance_criteria": [
+            "3 example runs saved",
+            "Menu screenshots",
+            "Excel file samples",
+            "Architecture diagram"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "10_finalization",
+      "phase_name": "Final Review & GitHub Prep",
+      "estimated_hours": 0.5,
+      "status": "Pending",
+      "tasks": [
+        {
+          "id": "TASK-037",
+          "name": "Final code review",
+          "priority": "critical",
+          "estimated_minutes": 20,
+          "dependencies": ["TASK-035", "TASK-036"],
+          "description": "Verify all code meets PROJECT_GUIDELINES.md standards",
+          "checks": [
+            "All files under 150 lines",
+            "All __init__.py files present",
+            "All type hints in place",
+            "All docstrings complete",
+            "No hardcoded secrets",
+            ".gitignore complete",
+            "Ring buffer logging works"
+          ],
+          "acceptance_criteria": [
+            "All checks pass",
+            "Ready for submission"
+          ]
+        },
+        {
+          "id": "TASK-038",
+          "name": "Prepare GitHub repository",
+          "priority": "high",
+          "estimated_minutes": 10,
+          "dependencies": ["TASK-037"],
+          "description": "Initialize git and prepare for upload",
+          "steps": [
+            "git init",
+            "git add .",
+            "git commit -m 'Initial commit: L19 AI Agents Grading System'",
+            "Document GitHub upload instructions in README"
+          ],
+          "acceptance_criteria": [
+            "Repository initialized",
+            "All files staged",
+            "Ready to push"
+          ]
+        }
+      ]
+    }
+  ],
+  "file_structure": {
+    "root": [
+      "README.md",
+      "main.py",
+      "requirements.txt",
+      ".gitignore",
+      ".env.example"
+    ],
+    "venv": [
+      ".gitkeep"
+    ],
+    ".claude/agents/Agent1_Email_Extractor": [
+      "SKILL.md"
+    ],
+    ".claude/agents/Agent2_Repository_Analyzer": [
+      "SKILL.md"
+    ],
+    ".claude/agents/Agent3_LLM_Feedback": [
+      "SKILL.md"
+    ],
+    ".claude/agents/Agent3_LLM_Feedback/personas": [
+      "trump_skill.md",
+      "hason_skill.md",
+      "lee_skill.md",
+      "amsalem_skill.md"
+    ],
+    ".claude/agents/Agent4_Draft_Creator": [
+      "SKILL.md"
+    ],
+    "src": [
+      "__init__.py"
+    ],
+    "src/ui": [
+      "__init__.py",
+      "menu.py",
+      "display.py",
+      "agent_runner.py"
+    ],
+    "src/utils": [
+      "__init__.py",
+      "logger.py",
+      "paths.py",
+      "config.py"
+    ],
+    "docs": [
+      "PRD.md",
+      "tasks.json"
+    ],
+    "results/excel": [
+      ".gitkeep"
+    ],
+    "results/graphs": [
+      ".gitkeep"
+    ],
+    "results/examples": [
+      ".gitkeep"
+    ],
+    "data": [
+      "students_mapping.xlsx"
+    ],
+    "logs/config": [
+      "log_config.json"
+    ],
+    "config": [
+      "settings.yaml"
+    ],
+    "Secrets": [
+      ".gitkeep"
+    ],
+    "temp/repos": [
+      ".gitkeep"
+    ]
+  },
+  "dependencies_graph": {
+    "SKILL.md_files": "Single source of truth - executed by both manual and automated modes",
+    "Agent1_SKILL.md": ["Gmail API", "Excel operations", "Bash tool", "Read/Write tools"],
+    "Agent2_SKILL.md": ["Git clone", "Python file operations", "Excel operations", "Multi-threading"],
+    "Agent3_SKILL.md": ["Gemini API", "Excel operations", "Persona sub-skills"],
+    "Agent3_personas": ["trump_skill.md", "hason_skill.md", "lee_skill.md", "amsalem_skill.md"],
+    "Agent4_SKILL.md": ["Gmail API", "Excel operations", "Student mapping"],
+    "main.py": ["Rich UI", "agent_runner", "display", "logger", "config"],
+    "agent_runner": ["subprocess.run() to invoke Claude Code CLI", "Parses exit codes and output"],
+    "manual_execution": ["claude CLI", "/agents command", "Direct SKILL.md execution"],
+    "automated_execution": ["python main.py", "subprocess invocation", "Same SKILL.md files"]
+  },
+  "critical_path": [
+    "TASK-001 → TASK-002 → TASK-003 → TASK-004 → TASK-005",
+    "TASK-005 → TASK-010 → TASK-021",
+    "TASK-005 → TASK-011 → TASK-022",
+    "TASK-005 → TASK-012 → TASK-023",
+    "TASK-014 → TASK-015/16/17/18 → TASK-019 → TASK-023",
+    "TASK-021 → TASK-022 → TASK-023 → TASK-024",
+    "TASK-024 → TASK-027 → TASK-028 → TASK-029 → ... → TASK-038"
+  ],
+  "quality_gates": {
+    "phase_1_complete": "All utilities working, logging active",
+    "phase_3_complete": "All external services tested individually",
+    "phase_4_complete": "All personas generate unique feedback",
+    "phase_5_complete": "All agents work independently",
+    "phase_6_complete": "Menu fully functional",
+    "phase_8_complete": "3 successful end-to-end test runs"
+  },
+  "risk_mitigation": {
+    "gmail_api_quota": "Implement batch processing, monitor usage",
+    "gemini_rate_limits": "Configurable delay, exponential backoff retry",
+    "large_repositories": "Clone timeout, skip and continue",
+    "concurrent_excel_access": "File locking for write operations"
+  },
+  "summary": {
+    "total_tasks": 25,
+    "total_files_to_create": 20,
+    "estimated_hours": 15,
+    "phases": 8,
+    "architecture_note": "Claude Code agents with SKILL.md files - Dual execution mode architecture",
+    "key_features": {
+      "dual_execution": "Manual (claude → /agents) AND Automated (python main.py)",
+      "single_source_of_truth": "SKILL.md files executed both ways",
+      "no_python_agents": "Removed Python agent classes - replaced with markdown skills",
+      "persona_sub_skills": "4 persona skills for Agent 3 (Trump, Hason, Lee, Amsalem)",
+      "subprocess_invocation": "python main.py invokes Claude Code via subprocess/CLI"
+    },
+    "key_benefits": [
+      "Development: Test agents individually via claude /agents",
+      "Production: Automate workflow via python main.py",
+      "Maintainability: Edit SKILL.md to change agent behavior",
+      "Simplicity: No complex Python agent classes needed"
+    ]
+  }
+}

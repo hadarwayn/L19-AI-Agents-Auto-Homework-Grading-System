@@ -1,0 +1,10 @@
+{
+  "ring_buffer": {
+    "max_lines_per_file": 1000,
+    "max_log_files": 5,
+    "log_directory": "logs",
+    "log_level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "date_format": "%Y-%m-%d %H:%M:%S"
+  }
+}
