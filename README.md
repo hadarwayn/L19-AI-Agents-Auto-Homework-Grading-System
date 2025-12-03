@@ -83,30 +83,37 @@ The system supports **two execution modes** that share the same agent logic:
 
 ## 🔄 Dual Execution Modes
 
-### Mode 1: Automated Mode (Production)
+### Mode 1: Modern Web UI (Production)
 
-**Use Case:** Run the complete grading pipeline with a rich interactive menu
+**Use Case:** Run the complete grading pipeline with a modern, interactive web interface
 
 ```bash
 python main.py
 ```
 
 **Features:**
-- 🎨 Rich terminal UI with colors and formatting
-- 🔄 Sequential pipeline execution with output verification
-- 📈 Real-time status and progress tracking
-- 🔄 System reset and status monitoring
-- 📧 Dynamic Agent 1 parameters (subject, sender, max emails)
+- 🎨 **Modern Streamlit web interface** - No more terminal, use clickable buttons!
+- 🖱️ **Click-based navigation** - Cards, buttons, and forms instead of typing
+- 📊 **Interactive data tables** - View and filter Excel files with search
+- 📈 **Real-time progress tracking** - Visual progress bars for each agent
+- 🎯 **Dashboard overview** - System status at a glance
+- 📧 **Form-based inputs** - Agent 1 parameters via web forms with sliders
+- 📥 **Download results** - Export Excel data to CSV
+- 🗂️ **Tabbed interface** - Easy navigation between agents and data views
 
-**Menu Options:**
-1. Run Agent 1 - Email Extractor (prompts for search parameters)
-2. Run Agent 2 - Repository Analyzer
-3. Run Agent 3 - LLM Feedback Generator
-4. Run Agent 4 - Draft Creator
-5. Run All Agents Sequentially
-6. Reset System
-7. System Status
-8. Exit
+**Web Interface:**
+- **Dashboard**: Quick overview with agent cards and system status
+- **Agent Pages**: Individual pages for each agent with execution controls
+- **Data Viewer**: Interactive tables for Excel1, Excel2, Excel3
+- **System Status**: File details and metrics
+- **Run All**: Execute full pipeline with visual progress
+- **Reset**: Confirm and reset system with one click
+
+**How to Launch:**
+1. Run `python main.py`
+2. Browser opens automatically at `http://localhost:8501`
+3. Click buttons and fill forms instead of typing!
+4. View results in interactive tables
 
 ### Mode 2: Manual Mode (Development/Testing)
 
@@ -934,31 +941,30 @@ The grading system successfully processes student homework submissions through a
 
 ### Screenshots
 
-#### Main Menu Interface
+#### Modern Web Interface
 
-*[Screenshot will be added showing the Rich terminal UI with 8 menu options]*
+![Dashboard after running all agents](results/examples/Dashboard%20after%20running%20all%20agents.png)
+*Dashboard view after successfully running all 4 agents - shows system status and agent cards*
 
-The interactive menu provides:
-- Options 1-4: Run individual agents
-- Option 5: Run all agents sequentially
-- Option 6: Reset system (clear all data)
-- Option 7: Display system status
-- Option 8: Exit
+#### Run All Agents - Pipeline Execution
 
-#### Agent 1: Email Extraction
+![After Run All Agents](results/examples/After%20Run%20All%20Agents.png)
+*Pipeline execution showing real-time progress, results summary, and success metrics for all agents*
 
-*[Screenshot will be added showing Agent 1 search parameters and email extraction process]*
-
-**Search Parameters Used:**
-- Email Subject: `GradingL19`
-- Max Emails: `30`
-- Results: 8 homework emails found (L11-L18)
+The web interface provides:
+- **Dashboard**: Overview with agent cards and system status metrics
+- **Run All Agents**: Execute full pipeline with visual progress tracking
+- **Individual Agent Pages**: Run agents separately with form inputs
+- **Data Viewer**: Interactive tables for Excel files with search/filter
+- **System Status**: File details and modification times
+- **Reset System**: Confirm and clear all data with one click
 
 #### Excel Output Files
 
 ##### Excel1.xlsx - Email Extraction Data
 
-*[Screenshot will be added showing Excel1.xlsx with 7 columns]*
+![Excel1 Example](results/examples/Excel1%20example.png)
+*Email extraction results showing 8 homework submissions with GitHub URLs*
 
 | email_id | received_time | email_subject | sender_email | github_url | thread_id | status |
 |----------|---------------|---------------|--------------|------------|-----------|--------|
@@ -975,7 +981,8 @@ The interactive menu provides:
 
 ##### Excel2.xlsx - Repository Analysis
 
-*[Screenshot will be added showing Excel2.xlsx with grade calculations]*
+![Excel2 Example](results/examples/Excel2%20example.png)
+*Repository analysis results with code quality metrics and grades*
 
 | email_id | github_url | total_files | total_lines | compliant_lines | grade | status |
 |----------|------------|-------------|-------------|-----------------|-------|--------|
@@ -983,13 +990,14 @@ The interactive menu provides:
 
 **Grade Formula:**
 ```
-compliant_files = count(files with ≤150 lines)
-grade = 100 * (compliant_files / total_files)
+compliant_lines = sum(lines in files with ≤150 lines)
+grade = 100 * (compliant_lines / total_lines)
 ```
 
 ##### Excel3.xlsx - AI Feedback
 
-*[Screenshot will be added showing Excel3.xlsx with persona-based feedback]*
+![Excel3 Example](results/examples/Excel3%20example.png)
+*AI-generated personalized feedback with persona-based responses*
 
 | email_id | grade | grade_category | persona | response | api_attempts | status |
 |----------|-------|----------------|---------|----------|--------------|--------|
@@ -1003,23 +1011,19 @@ grade = 100 * (compliant_files / total_files)
 
 #### Gmail Integration
 
-##### Inbox - Homework Submissions
-
-*[Screenshot will be added showing Gmail inbox with 8 homework emails]*
-
-Homework emails received with subjects:
-- AI Development Expert course - Homework - L11 - GradingL19
-- AI Development Expert course - Homework - L12 - GradingL19
-- ... (L13-L18)
-
 ##### Drafts - AI-Generated Feedback
 
-*[Screenshot will be added showing Gmail Drafts folder with generated replies]*
+![Gmail Draft Folder](results/examples/Gmail%20Draft%20folder%20after%20running%20all%20agents.png)
+*Gmail Drafts folder showing generated reply emails for all submissions*
+
+![Gmail Draft Email Example](results/examples/Gmail%20Draft%20email%20example.png)
+*Example of personalized draft email with AI feedback, grade, and repository link*
 
 Draft emails created for each submission:
 - Subject: Re: AI Development Expert course - Homework - L17
 - Threaded replies (using thread_id)
 - Personalized feedback with student name
+- Grade and repository link included
 - Not sent automatically (manual review required)
 
 ### Performance Metrics

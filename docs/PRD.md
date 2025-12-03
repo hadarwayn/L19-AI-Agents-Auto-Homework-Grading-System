@@ -1,10 +1,10 @@
 # PRD.md - Product Requirements Document
 # L19: AI Agents Auto Homework Grading System
 
-**Version:** 3.2
+**Version:** 3.3
 **Created:** December 2025
 **Author:** Hadar Wayn (AI Developer Expert Course Student)
-**Status:** Awaiting Approval
+**Status:** Complete
 **Last Updated:** December 3, 2025
 
 ---
@@ -34,15 +34,16 @@ The **AI Agents Auto Homework Grading System** is a comprehensive multi-agent Py
 ### Key Features
 
 - ✅ **4-Agent Sequential Pipeline**: Email extraction → Repository analysis → LLM feedback → Draft creation
+- ✅ **Modern Streamlit Web UI**: Interactive dashboard with clickable buttons, forms, and real-time progress tracking
 - ✅ **Gmail API Integration**: OAuth2 authentication, email search, draft creation
 - ✅ **Multi-threaded Repository Cloning**: 5 concurrent workers for parallel processing
 - ✅ **Line Count Grading Algorithm**: Grade based on files under 150 lines compliance
 - ✅ **AI-Powered Personalized Feedback**: 4 celebrity persona styles (Trump, Shahar Hason, Bruce Lee, Dudi Amsalem)
 - ✅ **Excel-Based Data Tracking**: Each agent produces its own Excel file for complete audit trail
-- ✅ **Rich CLI Interface**: Color-coded interactive menu with progress indicators
-- ✅ **Flexible Email Search**: User-defined subject, sender, and email count (1-100)
+- ✅ **Interactive Data Viewer**: View and filter Excel files with search functionality, download as CSV
+- ✅ **Flexible Email Search**: User-defined subject, sender, and email count (1-100) via web forms
 - ✅ **Graceful Error Handling**: Retry logic with configurable delays, status-based progression
-- ✅ **System Reset**: One-click cleanup of all generated data
+- ✅ **System Reset**: One-click cleanup of all generated data with confirmation dialog
 
 ---
 
@@ -256,35 +257,44 @@ python main.py      # Rich UI menu appears
 
 ## Functional Requirements
 
-### FR-1: Main Workflow Menu
+### FR-1: Main Workflow Interface
 
-**Description:** Interactive menu for agent execution and system management.
+**Description:** Modern Streamlit web UI for agent execution and system management accessible at `http://localhost:8501`.
 
-**Menu Display:**
-```
-╔══════════════════════════════════════════════════════════════════╗
-║         🎓 AI AGENTS AUTO HOMEWORK GRADING SYSTEM 🎓             ║
-║                      MAIN MENU                                   ║
-╠══════════════════════════════════════════════════════════════════╣
-║                                                                  ║
-║   [1] 📧 Run Agent 1 - Extract Emails from Gmail                ║
-║   [2] 📊 Run Agent 2 - Analyze Repositories & Calculate Grades  ║
-║   [3] 🤖 Run Agent 3 - Generate AI Feedback with Personas       ║
-║   [4] ✉️  Run Agent 4 - Create Gmail Draft Replies              ║
-║   [5] 🚀 Run All Agents (1 → 2 → 3 → 4)                         ║
-║   [6] 🗑️  Reset - Delete All Generated Files                     ║
-║   [7] 📋 System Status                                           ║
-║   [8] 🚪 Exit                                                    ║
-║                                                                  ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+**Web Interface Navigation:**
+
+**Dashboard (Landing Page):**
+- System status cards showing agents completed, emails extracted, repos analyzed, and cloned repos
+- Interactive agent cards with descriptions and run buttons for each agent
+- Quick access to all major functions
+
+**Sidebar Navigation Menu:**
+- 🏠 Dashboard
+- 📧 Agent 1: Email Extractor
+- 🔬 Agent 2: Repository Analyzer
+- 🤖 Agent 3: AI Feedback Generator
+- ✉️ Agent 4: Draft Creator
+- 🚀 Run All Agents
+- 📊 View Excel Files
+- ℹ️ System Status
+- 🗑️ Reset System
+
+**Key Features:**
+- **Clickable buttons** for all actions (no typing required)
+- **Form-based inputs** with text fields and sliders for Agent 1 parameters
+- **Real-time progress bars** showing agent execution status
+- **Interactive data tables** with search/filter for Excel files
+- **Download CSV** buttons for exporting results
+- **Visual feedback** with success/error messages and result counts
+- **Confirmation dialogs** for destructive actions (Reset)
+- **Tabbed interface** for viewing multiple Excel files
 
 **Business Rules:**
-- Agent 1 prompts for search parameters when selected (subject, sender, max emails)
-- Agents 2-4 process data from previous agents
-- "Run All" executes sequentially with error handling
-- Reset requires user confirmation
-- System Status displays current file states and logs
+- Agent 1 uses web forms for search parameters (subject, sender, max emails slider)
+- Agents 2-4 process data from previous agents with visual dependency warnings
+- "Run All Agents" displays pipeline execution with progress tracking and result summaries
+- Reset requires typing "RESET" for confirmation in web form
+- System Status shows file existence, row counts, and last modified timestamps
 
 ---
 
@@ -615,9 +625,13 @@ Are you sure? (yes/no):
 | `openpyxl` | 3.1.2+ | Excel file operations |
 | `gitpython` | 3.1.40+ | Git repository operations |
 | `rich` | 13.7.0+ | Beautiful CLI interface |
+| `streamlit` | 1.29.0+ | Modern web UI framework |
+| `plotly` | 5.18.0+ | Interactive visualizations |
+| `pandas` | 2.1.4+ | Data manipulation for UI tables |
 | `python-dotenv` | 1.0.0+ | Environment variables |
 | `tenacity` | 8.2.3+ | Retry logic |
 | `pydantic` | 2.5.2+ | Configuration validation |
+| `pyyaml` | 6.0.1+ | YAML configuration |
 
 ### Development Dependencies
 
