@@ -1,13 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(for file in src/ui/agents/*.py)",
-      "Bash(tree:*)",
-      "Bash(move:*)",
-      "Bash(for file in app_dashboard.py app_agent1_agent2.py app_agent3_agent4.py app_pipeline.py app_utils.py app_new.py)",
-      "Bash(do wc -l \"$file\")",
-      "Bash(echo:*)",
-      "Bash(for file in st_header.py st_forms.py st_viewers.py)"
+      "Bash(git commit:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

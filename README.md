@@ -117,7 +117,7 @@ python main.py
 
 ### Mode 2: Manual Mode (Development/Testing)
 
-**Use Case:** Test individual agents during development
+**Use Case:** Test individual agents during development using Claude Code CLI
 
 ```bash
 # 1. Start Claude Code CLI
@@ -133,11 +133,79 @@ claude
 #    - Agent4_Draft_Creator
 ```
 
+**How It Works:**
+
+When you select an agent in the Claude Code CLI:
+
+1. **Claude reads the SKILL.md file** from `.claude/agents/[AgentName]/SKILL.md`
+2. **Executes the instructions** defined in that file (same logic as automated mode)
+3. **Interacts with you** for any required input (e.g., Agent 1 parameters)
+4. **Produces the same output** (Excel files, Gmail drafts)
+5. **Shows results** in the CLI with status and error messages
+
+**Example: Running Agent 1 Manually**
+
+```bash
+$ claude
+> /agents
+> Agent1_Email_Extractor
+
+# Claude reads .claude/agents/Agent1_Email_Extractor/SKILL.md
+# Prompts you for parameters:
+📧 Email Subject (optional): homework
+👤 Sender Email (optional):
+🔢 Max Emails (1-100) [Default: 10]: 5
+
+# Executes the agent logic
+✅ Processed 5 emails
+✅ Created results/excel/Excel1.xlsx
+```
+
 **Benefits:**
-- 🔍 Test single agents in isolation
-- 🐛 Debug agent logic and outputs
-- 📝 Verify SKILL.md instructions
-- ⚡ Faster iteration during development
+- 🔍 **Test single agents in isolation** - Run Agent 2 without running Agent 1 first
+- 🐛 **Debug agent logic and outputs** - See detailed execution logs
+- 📝 **Verify SKILL.md instructions** - Test changes to agent definitions
+- ⚡ **Faster iteration during development** - No UI overhead
+- 🔄 **Same code as automated mode** - SKILL.md is the single source of truth
+
+**When to Use Manual Mode:**
+- Developing or modifying agent logic
+- Testing edge cases with specific inputs
+- Debugging errors in agent execution
+- Verifying agent outputs without running full pipeline
+
+**When to Use Automated Mode:**
+- Running the complete grading pipeline
+- Production use with multiple submissions
+- Reviewing results in a modern web interface
+- Non-technical users who prefer clickable UI
+
+### How Both Modes Work Together
+
+**Single Source of Truth: SKILL.md Files**
+
+Both execution modes use the **exact same SKILL.md files** in `.claude/agents/`:
+
+```
+.claude/agents/
+├── Agent1_Email_Extractor/
+│   └── SKILL.md          ← Both modes read this file
+├── Agent2_Repository_Analyzer/
+│   └── SKILL.md          ← Both modes read this file
+├── Agent3_LLM_Feedback/
+│   └── SKILL.md          ← Both modes read this file
+└── Agent4_Draft_Creator/
+    └── SKILL.md          ← Both modes read this file
+```
+
+**Execution Flow:**
+
+| Mode | Trigger | Reads | Executes | Output |
+|------|---------|-------|----------|--------|
+| **Manual** | `claude → /agents → select agent` | SKILL.md | Python code in SKILL.md | Same Excel files + CLI logs |
+| **Automated** | `python main.py → click button` | SKILL.md via subprocess | Python code in SKILL.md | Same Excel files + Web UI progress |
+
+**Key Advantage:** Update the SKILL.md file once, and both modes automatically use the new logic!
 
 ---
 
@@ -781,6 +849,90 @@ L19/
 
 ---
 
+## 📁 Code Files Summary
+
+This project follows **PROJECT_GUIDELINES.md** with all code files under 150 lines.
+
+### Main Application & UI
+
+| File | Description | Lines |
+|------|-------------|-------|
+| [`main.py`](main.py) | Application entry point - launches Streamlit UI | 89 |
+| [`src/ui/app.py`](src/ui/app.py) | Main Streamlit application with navigation | 82 |
+| [`src/ui/app_dashboard.py`](src/ui/app_dashboard.py) | Dashboard page with status cards | 75 |
+| [`src/ui/app_agent1_agent2.py`](src/ui/app_agent1_agent2.py) | Agent 1 & 2 execution pages | 106 |
+| [`src/ui/app_agent3_agent4.py`](src/ui/app_agent3_agent4.py) | Agent 3 & 4 execution pages | 103 |
+| [`src/ui/app_pipeline.py`](src/ui/app_pipeline.py) | Run all agents pipeline page | 93 |
+| [`src/ui/app_utils.py`](src/ui/app_utils.py) | View data, status, reset pages | 81 |
+| [`src/ui/menu.py`](src/ui/menu.py) | Terminal UI menu system | 95 |
+| [`src/ui/display.py`](src/ui/display.py) | Rich terminal UI components | 71 |
+
+### Streamlit Components
+
+| File | Description | Lines |
+|------|-------------|-------|
+| [`src/ui/st_header.py`](src/ui/st_header.py) | Header, styling, agent cards | 90 |
+| [`src/ui/st_forms.py`](src/ui/st_forms.py) | Forms and input components | 75 |
+| [`src/ui/st_viewers.py`](src/ui/st_viewers.py) | Data viewers and status displays | 116 |
+
+### Agent Modules
+
+| File | Description | Lines |
+|------|-------------|-------|
+| [`src/ui/agents/agent_dispatcher.py`](src/ui/agents/agent_dispatcher.py) | Main agent dispatcher (run_agent, run_all_agents) | 145 |
+| [`src/ui/agents/gmail_auth.py`](src/ui/agents/gmail_auth.py) | Gmail API authentication (shared) | 76 |
+| [`src/ui/agents/excel_utils.py`](src/ui/agents/excel_utils.py) | Excel file utilities (shared) | 92 |
+
+#### Agent 1: Email Extractor
+
+| File | Description | Lines |
+|------|-------------|-------|
+| [`src/ui/agents/agent1_params.py`](src/ui/agents/agent1_params.py) | Parameter prompts (subject, sender, max emails) | 119 |
+| [`src/ui/agents/agent1_email_parser.py`](src/ui/agents/agent1_email_parser.py) | Email parsing and GitHub URL extraction | 128 |
+| [`src/ui/agents/agent1_executor.py`](src/ui/agents/agent1_executor.py) | Agent 1 execution logic | 148 |
+
+#### Agent 2: Repository Analyzer
+
+| File | Description | Lines |
+|------|-------------|-------|
+| [`src/ui/agents/agent2_repo_analyzer.py`](src/ui/agents/agent2_repo_analyzer.py) | Repository cloning and analysis | 135 |
+| [`src/ui/agents/agent2_executor.py`](src/ui/agents/agent2_executor.py) | Agent 2 execution logic | 149 |
+
+#### Agent 3: LLM Feedback Generator
+
+| File | Description | Lines |
+|------|-------------|-------|
+| [`src/ui/agents/agent3_feedback_generator.py`](src/ui/agents/agent3_feedback_generator.py) | Gemini API feedback generation | 117 |
+| [`src/ui/agents/agent3_executor.py`](src/ui/agents/agent3_executor.py) | Agent 3 execution logic | 147 |
+
+#### Agent 4: Draft Creator
+
+| File | Description | Lines |
+|------|-------------|-------|
+| [`src/ui/agents/agent4_executor.py`](src/ui/agents/agent4_executor.py) | Gmail draft creation logic | 143 |
+
+### Core Utilities
+
+| File | Description | Lines |
+|------|-------------|-------|
+| [`src/utils/paths.py`](src/utils/paths.py) | Path management (relative paths) | 128 |
+| [`src/utils/logger.py`](src/utils/logger.py) | Ring buffer logging system | 116 |
+| [`src/utils/config.py`](src/utils/config.py) | Configuration loader (Pydantic) | 150 |
+| [`src/utils/validators.py`](src/utils/validators.py) | Input validation functions | 137 |
+| [`src/utils/hash_utils.py`](src/utils/hash_utils.py) | SHA-256 hashing utilities | 102 |
+
+### Statistics
+
+| Metric | Value |
+|--------|-------|
+| **Total Code Files** | 28 |
+| **Total Lines** | 3,003 |
+| **Average Lines per File** | 107 |
+| **Maximum Allowed** | 150 lines per file ✅ |
+| **Compliance** | 100% (all files under 150 lines) |
+
+---
+
 ## 🔧 Troubleshooting
 
 ### Gmail Authentication Issues
@@ -1054,6 +1206,166 @@ Based on testing, the following search terms work best:
 - `AI Development Expert course` - Too generic, requires max_emails ≥30
 
 **Pro Tip:** Use specific, unique identifiers in email subjects for reliable extraction.
+
+---
+
+## 🎓 Learning Objectives
+
+This project demonstrates mastery of several advanced software engineering concepts:
+
+### 1. Multi-Agent System Architecture
+
+**Concept:** Designing systems with specialized agents that work together sequentially
+
+**Implementation:**
+- 4 independent agents with clear responsibilities
+- Sequential pipeline (Agent 1 → Agent 2 → Agent 3 → Agent 4)
+- Each agent reads input from previous agent's output (Excel files)
+- Failure handling at each stage
+
+**Real-World Application:**
+- ETL (Extract-Transform-Load) data pipelines
+- Microservices architecture
+- Task automation workflows
+
+### 2. Dual Execution Mode Pattern
+
+**Concept:** Supporting multiple execution modes with single source of truth
+
+**Implementation:**
+- SKILL.md files define agent logic once
+- Manual mode: Claude CLI reads SKILL.md → executes Python code
+- Automated mode: Python UI subprocess reads SKILL.md → executes Python code
+- Both modes produce identical outputs
+
+**Real-World Application:**
+- CI/CD pipelines (manual vs automated deployment)
+- Development vs production environments
+- Testing frameworks (unit tests vs integration tests)
+
+### 3. External API Integration
+
+**Concept:** Integrating multiple external services with authentication and error handling
+
+**Implementation:**
+- Gmail API: OAuth 2.0 authentication, email search, draft creation
+- Gemini AI API: API key authentication, rate limiting, retry logic
+- GitHub: Repository cloning, file analysis
+
+**Real-World Application:**
+- Payment gateway integration (Stripe, PayPal)
+- Social media APIs (Twitter, Facebook)
+- Cloud services (AWS, Google Cloud, Azure)
+
+### 4. Concurrent Processing
+
+**Concept:** Using threading to parallelize slow operations
+
+**Implementation:**
+- ThreadPoolExecutor with 5 workers for repository cloning
+- Concurrent GitHub repository operations
+- Progress tracking across multiple threads
+
+**Real-World Application:**
+- Web scraping with multiple concurrent requests
+- Batch processing of files or database records
+- Parallel API calls to multiple endpoints
+
+### 5. Data Pipeline with Excel as Database
+
+**Concept:** Using structured files for intermediate data storage
+
+**Implementation:**
+- Excel1.xlsx: Email data extraction
+- Excel2.xlsx: Repository analysis + grades
+- Excel3.xlsx: AI feedback generation
+- Each agent reads/writes specific columns
+
+**Real-World Application:**
+- ETL pipelines with CSV/Parquet files
+- Data lakes with structured intermediate formats
+- Reporting systems with Excel/Google Sheets
+
+### 6. Modular Code Architecture (150 Lines Per File)
+
+**Concept:** Breaking large systems into small, focused modules
+
+**Implementation:**
+- 28 code files, all under 150 lines
+- Each module has single responsibility
+- Shared utilities (gmail_auth.py, excel_utils.py)
+- Clear separation: params, parsing, execution
+
+**Real-World Application:**
+- Maintaining large codebases
+- Team collaboration (smaller files = fewer merge conflicts)
+- Code review efficiency
+
+### 7. AI Persona-Based Content Generation
+
+**Concept:** Generating contextually appropriate responses based on performance metrics
+
+**Implementation:**
+- 4 unique personas mapped to grade ranges
+- Gemini AI API for natural language generation
+- Persona skills loaded dynamically
+- Exponential backoff retry logic
+
+**Real-World Application:**
+- Chatbots with different conversation styles
+- Content generation for different audiences
+- Automated customer support with tone matching
+
+### 8. Modern Web UI with Streamlit
+
+**Concept:** Building interactive web applications from Python code
+
+**Implementation:**
+- Streamlit framework for modern UI
+- Form-based inputs with validation
+- Real-time progress tracking
+- Interactive data tables
+- Session state management
+
+**Real-World Application:**
+- Internal dashboards and tools
+- Data science prototypes
+- Admin panels
+- Business intelligence reports
+
+### Key Takeaways
+
+| Skill | Traditional Approach | This Project's Approach | Benefit |
+|-------|---------------------|-------------------------|---------|
+| **File Management** | Absolute paths | `pathlib.Path` with relative paths | Works on any computer |
+| **Configuration** | Hardcoded values | `.env` + Pydantic settings | Secure, maintainable |
+| **Error Handling** | Fail immediately | Retry logic + exponential backoff | Resilient to API failures |
+| **Code Organization** | Large monolithic files | 150 lines per file max | Easy to understand, maintain |
+| **Execution Flexibility** | Single UI | Dual mode (CLI + Web) | Development + production |
+| **Testing** | Manual only | Both manual (CLI) & automated (Web) | Faster iteration |
+
+### Parameter Variations Explored
+
+**Agent 1 (Email Extraction):**
+- **Subject patterns**: Exact match vs substring match
+- **Max emails**: 1-100 (affects processing time)
+- **Sender filtering**: All senders vs specific email
+
+**Agent 2 (Repository Analysis):**
+- **Line limit**: 150 lines (configurable)
+- **Worker count**: 5 concurrent threads (configurable)
+- **Grading formula**: compliant_lines / total_lines * 100
+
+**Agent 3 (LLM Feedback):**
+- **Grade thresholds**: 90-100, 70-90, 55-70, 0-55
+- **Persona selection**: Based on grade category
+- **API parameters**: temperature, max_tokens, request_delay
+
+**Learning Outcomes:**
+- Changing max_emails affects Agent 1 execution time linearly
+- Increasing worker count improves Agent 2 speed (up to system limits)
+- Grade thresholds affect persona distribution
+- API delays prevent rate limiting but slow Agent 3
 
 ---
 

@@ -59,6 +59,18 @@ Thumbs.db
 htmlcov/
 *.cover
 
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
 # Claude Code
 .claude/.cache/
 Secrets/token.json
+
+# Additional Python
+*.egg
+.Python
+MANIFEST
+
+# UV Package Manager
+.uv/
