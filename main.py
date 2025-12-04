@@ -41,7 +41,7 @@ def main():
         logger.info("Launching Streamlit web UI")
 
         # Get app path
-        app_path = Path(__file__).parent / "app.py"
+        app_path = Path(__file__).parent / "src" / "ui" / "app.py"
 
         if not app_path.exists():
             print(f"❌ Error: app.py not found at {app_path}")
@@ -81,7 +81,7 @@ def main():
     except Exception as e:
         print(f"\n❌ Error launching Streamlit: {e}")
         logger.exception("Error launching Streamlit web UI")
-        print("\n💡 Try running manually: streamlit run app.py")
+        print("\n💡 Try running manually: streamlit run src/ui/app.py")
         return 1
 
 

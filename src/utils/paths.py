@@ -13,12 +13,7 @@ from typing import Union
 
 
 def get_project_root() -> Path:
-    """
-    Get the project root directory.
-
-    Returns:
-        Path: Absolute path to project root (parent of src/)
-    """
+    """Get the project root directory"""
     return Path(__file__).parent.parent.parent
 
 
@@ -88,10 +83,7 @@ def get_claude_agents_dir() -> Path:
 
 
 def ensure_directories() -> None:
-    """
-    Ensure all required directories exist.
-    Creates directories if they don't exist.
-    """
+    """Ensure all required directories exist"""
     directories = [
         get_results_dir(),
         get_excel_dir(),
@@ -112,49 +104,22 @@ def ensure_directories() -> None:
 
 
 def get_excel_file(filename: str) -> Path:
-    """
-    Get path to Excel file in results/excel/
-
-    Args:
-        filename: Name of Excel file (e.g., "Excel1.xlsx")
-
-    Returns:
-        Path: Full path to Excel file
-    """
+    """Get path to Excel file in results/excel/"""
     return get_excel_dir() / filename
 
 
 def get_config_file(filename: str) -> Path:
-    """
-    Get path to configuration file
-
-    Args:
-        filename: Name of config file (e.g., "settings.yaml")
-
-    Returns:
-        Path: Full path to config file
-    """
+    """Get path to configuration file"""
     return get_config_dir() / filename
 
 
 def get_log_file(filename: str) -> Path:
-    """
-    Get path to log file
-
-    Args:
-        filename: Name of log file
-
-    Returns:
-        Path: Full path to log file
-    """
+    """Get path to log file"""
     return get_logs_dir() / filename
 
 
 def clean_temp_repos() -> None:
-    """
-    Clean all cloned repositories from temp/repos/
-    Removes all subdirectories but keeps the repos/ directory itself.
-    """
+    """Clean all cloned repositories from temp/repos/"""
     repos_dir = get_repos_dir()
     if repos_dir.exists():
         for item in repos_dir.iterdir():

@@ -1,14 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python3:*)",
-      "Bash(python:*)",
-      "Bash(pip install:*)",
-      "Bash(findstr:*)",
-      "Bash(powershell -Command \"Get-Content README.md | Select-String -Pattern ''Results'' -Context 2,2\")",
-      "Bash(powershell -Command:*)",
-      "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(for file in src/ui/agents/*.py)",
+      "Bash(tree:*)",
+      "Bash(move:*)",
+      "Bash(for file in app_dashboard.py app_agent1_agent2.py app_agent3_agent4.py app_pipeline.py app_utils.py app_new.py)",
+      "Bash(do wc -l \"$file\")",
+      "Bash(echo:*)",
+      "Bash(for file in st_header.py st_forms.py st_viewers.py)"
     ],
     "deny": [],
     "ask": []
